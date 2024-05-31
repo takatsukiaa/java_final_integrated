@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/style.css') }}">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>縮網址服務</title>
+  </head>
+  <body>
+    <div class="container">
+      <h1>縮網址服務</h1>
+      <p>輸入一個網址，幫你生成一個短網址。</p>
+      <input type="text" id="urlInput" placeholder="請輸入網址" />
+      <button onclick="shortenUrl()">縮短網址!</button>
+      <div class="result" id="result">
+        <p>縮短後的網址：</p>
+        <input type="text" id="shortUrl" readonly />
+      </div>
+    </div>
+    <div class="loadingdiv" id="loading" style="display: none"> </div>
+    <script>
+      async function shortenUrl() {
+        const urlInput = document.getElementById("urlInput").value;
+        const result = document.getElementById("result");
+        const shortUrl = document.getElementById("shortUrl");
+        if (urlInput) {
+          try {
+            // Show loading screen
+            loading.style.display = "block";
+            result.style.display = "none";
+            
+            // Start timer
+            const startTime = Date.now();
+
+            const response = await fetch(
+              `http://localhost:8080/api/v1/shorten?originalUrl=${urlInput}`,
+              {
+                method: "POST",
+              }
+            );
+
+            if (response.ok) {
+              const data = await response.text(); // Assuming the backend returns plain text
+              shortUrl.value = "localhost:8080/api/v1/" + data;
+              result.style.display = "block";
+            } else {
+              alert("縮短網址失敗");
+            }
+
+            // Calculate elapsed time and set a minimum display time for the loading screen
+            const elapsedTime = Date.now() - startTime;
+            const minDisplayTime = 1000; // 3 seconds
+
+            if (elapsedTime < minDisplayTime) {
+              setTimeout(() => {
+                loading.style.display = "none";
+              }, minDisplayTime - elapsedTime);
+            } else {
+              loading.style.display = "none";
+            }
+          } catch (error) {
+            console.error("Error:", error);
+            alert("縮短網址失敗");
+            loading.style.display = "none";
+          }
+        } else {
+          alert("請輸入有效的網址");
+        }
+      }
+    </script>
+  </body>
+</html>
