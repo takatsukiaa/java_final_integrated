@@ -22,7 +22,7 @@
       <button onclick="shortenUrl()">縮短網址!</button>
       <div class="result" id="result">
         <p>縮短後的網址：</p>
-        <input type="text" id="shortUrl" readonly />
+      	<span id="shortUrl"class="short-url"  onclick="copyToClipboard()"></span>
       </div>
     </div>
     <div class="loadingdiv" id="loading" style="display: none;transform: scale(0.75);"> </div>
@@ -32,8 +32,9 @@
         const result = document.getElementById("result");
         const shortUrl = document.getElementById("shortUrl");
         // Define a regex pattern for URLs
-        const urlPattern = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
-        if (urlInput && urlPattern.test(urlInput)) { 
+	      const urlPattern = /^(https?:\/\/)?([a-zA-Z0-9.-]+)\.([a-zA-Z]{2,6})([\/\w .-]*)*\/?(\?.*)?$/;
+
+	      if (urlInput && urlPattern.test(urlInput)) { 
           try {
                         loading.style.display = "block";
                         result.style.display = "none";
@@ -50,8 +51,8 @@
             
                         if (response.ok) {
                           const data = await response.text();
-                          shortUrl.value = "https://owen.ccns.io/api/" + data;
-                          result.style.display = "block";
+                          shortUrl.textContent = "https://owen.ccns.io/" + data;
+			  result.style.display = "block";
                         } else {
                           alert("縮短網址失敗");
                         }
@@ -75,6 +76,17 @@
           alert("請輸入有效的網址"); // Show an error message if the input is not a valid URL
         }
       }
+function copyToClipboard() {
+	        const shortUrl = document.getElementById("shortUrl");
+	        const textArea = document.createElement("textarea");
+	        textArea.value = shortUrl.textContent;
+	        document.body.appendChild(textArea);
+	        textArea.select();
+	        textArea.setSelectionRange(0, 99999); // For mobile devices
+	        document.execCommand("copy");
+	        document.body.removeChild(textArea);
+	        alert("已複製短網址: " + shortUrl.textContent);
+	      }
     </script>
   </body>
 </html>
