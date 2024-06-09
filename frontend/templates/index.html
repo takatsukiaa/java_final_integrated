@@ -16,7 +16,7 @@
   </header>
   <body>
     <div class="container">
-      <h1>縮網址服務</h1>
+      <h1>縮網址服務</h1>backend
       <p>輸入一個網址，幫你生成一個短網址。</p>
       <input type="text" id="urlInput" placeholder="請輸入網址" />
       <button onclick="shortenUrl()">縮短網址!</button>
@@ -42,7 +42,7 @@
                         const startTime = Date.now();
             
                         const response = await fetch(
-                          `http://backend:8080/api/v1/shorten?originalUrl=${urlInput}`,
+                          `https://owen.ccns.io/api/shorten?originalUrl=${urlInput}`,
                           {
                             method: "POST",
                           }
@@ -50,7 +50,7 @@
             
                         if (response.ok) {
                           const data = await response.text();
-                          shortUrl.value = "localhost:8080/api/v1/" + data;
+                          shortUrl.value = "https://owen.ccns.io/api/" + data;
                           result.style.display = "block";
                         } else {
                           alert("縮短網址失敗");
