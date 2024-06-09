@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/style.css') }}">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>縮網址服務</title>
+  </head>
+  <header class="header-content">
+    <nav>
+      <ul>
+        <li><a href="/" class="large-font">縮網址服務</a></li>
+        <li><a href="https://github.com/takatsukiaa/java_final_integrated"><img src="https://raw.githubusercontent.com/rdimascio/icons/932c4cf6c9e2031abeca1c164baa0f76785c16fe/icons/github.svg" alt="GitHub" class="github-icon"></a></li>
+      </ul>
+    </nav>
+  </header>
+  <body>
+    <div class="container">
+      <h1>縮網址服務</h1>
+      <p>輸入一個網址，幫你生成一個短網址。</p>
+      <input type="text" id="urlInput" placeholder="請輸入網址" />
+      <button onclick="shortenUrl()">縮短網址!</button>
+      <div class="result" id="result">
+        <p>縮短後的網址：</p>
+        <input type="text" id="shortUrl" readonly />
+      </div>
+    </div>
+    <div class="loadingdiv" id="loading" style="display: none;transform: scale(0.75);"> </div>
+    <script>
+      async function shortenUrl() {
+        const urlInput = document.getElementById("urlInput").value;
+        const result = document.getElementById("result");
+        const shortUrl = document.getElementById("shortUrl");
+        // Define a regex pattern for URLs
+        const urlPattern = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
+        if (urlInput && urlPattern.test(urlInput)) { 
+          try {
+                        loading.style.display = "block";
+                        result.style.display = "none";
+                        
+                        // Start timer
+                        const startTime = Date.now();
+            
+                        const response = await fetch(
+                          `http://backend:8080/api/v1/shorten?originalUrl=${urlInput}`,
+                          {
+                            method: "POST",
+                          }
+                        );
+            
+                        if (response.ok) {
+                          const data = await response.text();
+                          shortUrl.value = "localhost:8080/api/v1/" + data;
+                          result.style.display = "block";
+                        } else {
+                          alert("縮短網址失敗");
+                        }
+            
+                        const elapsedTime = Date.now() - startTime;
+                        const minDisplayTime = 1000; // 3 seconds
+            
+                        if (elapsedTime < minDisplayTime) {
+                          setTimeout(() => {
+                            loading.style.display = "none";
+                          }, minDisplayTime - elapsedTime);
+                        } else {
+                          loading.style.display = "none";
+                        }
+          } catch (error) {
+            console.error("Error:", error);
+            alert("縮短網址失敗");
+            loading.style.display = "none";
+          }
+        } else {
+          alert("請輸入有效的網址"); // Show an error message if the input is not a valid URL
+        }
+      }
+    </script>
+  </body>
+</html>
