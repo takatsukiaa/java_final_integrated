@@ -16,6 +16,9 @@ This project is a URL shortening service built with Spring Boot, PostgreSQL, and
 - **Docker & Docker Compose**
 - **Swagger**
 
+## Design Diagram
+![](https://hackmd.io/_uploads/rkQuGPXBR.png)
+
 ## Getting Started
 
 ### Prerequisites
